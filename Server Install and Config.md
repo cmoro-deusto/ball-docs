@@ -165,7 +165,7 @@ Examples:
 
 - Production frontend server: `pubapi03.pro.bio.example.com`
 - Development database server: `db01.dev.bio.example.com`
-- Testing application server: `test02.app.mad.example.com`
+- Testing application server: `test02.tst.mad.example.com`
  
  Those names are used **internally**, so that you can locate server to work with them, administer them or for the servers to locate themselves. 
  
