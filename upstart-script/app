@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# An example init script for running a play application as a service.
+# 
+# You will need to set the environment variables noted below to conform to
+# your use case, and change the init info comment block.
+#
+# Based on:
+# http://www.agileand.me/play-2-2-x-upstart-init-script/
+#
+description "My Play Application"
+ 
+env USER=ubuntu
+env GROUP=ubuntu
+env APP_HOME=
+env APP_NAME=
+env PORT=80
+env BIND_ADDRESS=0.0.0.0
+ 
+env EXTRA=""
+ 
+start on (filesystem and net-device-up IFACE=lo)
+stop on runlevel [!2345]
+ 
+respawn
+respawn limit 30 10
+umask 022
+expect daemon
+ 
+pre-start script
+    #If improper shutdown and the PID file is left on disk delete it so we can start again
+    if [ -f $APP_HOME/RUNNING_PID ] &amp;&amp; ! ps -p `cat $APP_HOME/RUNNING_PID` > /dev/null ; then
+        rm $APP_HOME/RUNNING_PID ;
+    fi
+end script
+ 
+exec start-stop-daemon --pidfile ${APP_HOME}/RUNNING_PID --chdir ${APP_HOME} --chuid $USER:$GROUP --exec ${APP_HOME}/target/universal/stage/bin/$APP_NAME --background --start -- -Dhttp.port=$PORT -Dhttp.address=$BIND_ADDRESS $EXTRA
