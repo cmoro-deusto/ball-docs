@@ -515,11 +515,9 @@ sudo service app restart
 To configure Upstart, we are going to create the upstart init script, copy it to the appropriate location, give it the required permissions and set it up to start automatically if the machine is restarted.
 
 #### Create the Upstart script
-Using your favorite text editor, create a file called `app` with the following contents:
+Using your favorite text editor, create a file called `app.conf` with the following contents:
 
 ```
-#!/bin/bash
-#
 # An example init script for running a play application as a service.
 # 
 # You will need to set the environment variables noted below to conform to
@@ -558,30 +556,23 @@ exec start-stop-daemon --pidfile ${APP_HOME}/RUNNING_PID --chdir ${APP_HOME} --c
 ```
 
 
-Then we need to copy the file to init directory and give permissions:
+Then we need to copy the file to init directory:
 
 ```
-sudo cp app /etc/init.d/app
-sudo chmod a+x /etc/init.d/app
+sudo cp app /etc/init/app
 ```
 
-After putting the script in place, we need to update the system service definitions:
+After putting the script in place, we need to check the script for any syntax errors:
 
 ```
-sudo update-rc.d app defaults
+init-checkconf /etc/init/app.conf
 ```
 
-This will update upstart init.d runlevel scripts:
+This will check the upstart script syntax. If everything is OK, it displays the following message:
 
 ```
- Adding system startup for /etc/init.d/app ...
-   /etc/rc0.d/K20app -> ../init.d/app
-   /etc/rc1.d/K20app -> ../init.d/app
-   /etc/rc6.d/K20app -> ../init.d/app
-   /etc/rc2.d/S20app -> ../init.d/app
-   /etc/rc3.d/S20app -> ../init.d/app
-   /etc/rc4.d/S20app -> ../init.d/app
-   /etc/rc5.d/S20app -> ../init.d/app
+$ init-checkconf /etc/init/app.conf
+File /etc/init/app.conf: syntax ok
 ```
 
 Now everything is ready regarding upstart. See Server Management section below for usage.
